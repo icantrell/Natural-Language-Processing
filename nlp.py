@@ -101,10 +101,20 @@ class hmm:
         self.initial_matrix = random.dirichlet(np.ones((num_states)))
         self.initial_matrix.dtype = np.float64
         
-        for o in observations: 
-            #The emission probabilities for each state sum to 1.
-            self.emission_matrix[o] = random.dirichlet(np.ones((num_states)))
-            self.emission_matrix[o].dtype = np.float64
+        
+        #The emission probabilities for each state sum to 1.
+        emission_probs = random.dirichlet(np.ones(len(observations)), num_states)
+        
+        #This is patchwork code. (implemented emssion matrix backwards)
+        for o in observations:
+            self.emission_matrix[o] = np.zeros(num_states)
+            
+        #set values of emission matrix   
+        for i,o in enumerate(observations):
+            for x in range(num_states):
+                self.emission_matrix[o][x] =  emission_probs[x][i]
+                
+                
     
     def _forward_algorithm(self,arr):
         #test if prefix of the array was already computed?
@@ -154,7 +164,7 @@ class hmm:
         if arr[0] in self.emission_matrix:
             transition_array[0] = self.initial_matrix * self.emission_matrix[arr[0]]
         else:
-            print('"' + arr[0] +' is not recognized.')
+            print('"' + arr[0] +'" is not recognized.')
             return []          
        
         #for each element in the input find and record the last most likely state.
@@ -170,7 +180,7 @@ class hmm:
                     #record last value.
                     backtrack_array[index-1][n_index] = l_index
             else:
-                print('"' + arr[index] +' is not recognized.')
+                print('"' + arr[index] +'" is not recognized.')
                 return []
         
         #set aside space to build the output sequence.
@@ -213,7 +223,7 @@ class hmm:
             
             #for each observation sequence
             for i,arr in enumerate(arrs):
-                if i%int(len(arrs)*0.1) == 0:
+                if int(i%len(arrs)*0.1) == 0:
                     print(i/float(len(arrs)))
                 #run forward and backward algorithm and store results.
                 f_array = self._forward_algorithm(arr)
