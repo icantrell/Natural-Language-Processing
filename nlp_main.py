@@ -5,6 +5,7 @@ h.load_from_file('hmm2.dat')
 
 
 while(1):
+    print('test a random walk along hidden markov chain for coherent sentences.')
     h.talk()
     s = nlp.parse(input('sentence: '))
     ts = h.viterbi(s)
