@@ -107,3 +107,11 @@ def test_probability_of_transitions():
 #should've used inheritence to test private methods.
 test_probability_of_transitions()
 
+
+
+def test_viterbi():
+    A = get_test_model0()
+    
+    seq = A.viterbi('this is a test sentence, which is used for testing long sentences.', testing=True)
+
+

@@ -158,7 +158,7 @@ class hmm:
         #return the matrix   
         return backward_array[::-1]
 
-    def viterbi(self,arr):
+    def viterbi(self,arr,testing=False):
         #USE ADDITIVE LOG.
         #set aside space for a transition matrix to hold the values for the
         transition_array = np.empty((len(arr),len(self.transition_matrix)),dtype=np.float64)
@@ -170,17 +170,17 @@ class hmm:
         else:
             print('"' + arr[0] +'" is not recognized.')
             return []          
-       
+        
         #for each element in the input find and record the last most likely state.
         for index,entry in list(enumerate(arr))[1:]:
             if arr[index] in self.emission_matrix:
                 for n_index in range(len((self.transition_matrix))):
+                    transition_array[index-1] /= np.sum(transition_array[index-1])
                     #get the incoming values by multiplying by their transition probablities.
                     incoming_values = transition_array[index-1]*np.array(self.transition_matrix).T[n_index]
                     #find the index of the most likely.
                     l_index = np.argmax(incoming_values)
                     #get the probability this state output the current element.
-                    a = len(self.emission_matrix[arr[index]])
                     transition_array[index][n_index] = np.array(self.emission_matrix[arr[index]])[0][n_index] * incoming_values[l_index]
                     #record last value.
                     backtrack_array[index-1][n_index] = l_index
@@ -192,15 +192,18 @@ class hmm:
         output_sequence = np.empty((len(arr)),dtype=np.int64)   
         #find the most likely final state.
         output_sequence[0] = np.argmax(transition_array[-1])
-        
+        print(transition_array)
         for i,x in zip(range(1,len(output_sequence)),range(len(backtrack_array))[::-1]):
             #go backwards down the backtrack getting each value.
             output_sequence[i] = backtrack_array[x][output_sequence[i-1]]
         
+        if testing:
+            return transition_array 
+        
         #return the sequence.
         if len(self.state_tag_map) == len(self.transition_matrix):
             return self.state_tag_map[output_sequence[::-1]]
-        
+
         #return the reverse of the array
         return output_sequence[::-1]
                             
