@@ -10,13 +10,13 @@ The algorithm is trained inside nlp_training.py where it is feed a .dat file con
 <br>
 The algorithm will recognize the patterns in the training file and use these label words with it's states these states can then be statistically compared against words labeled with English grammar symbols. The brown_words.dat file contains a corpus that is  labeled with correct English grammar symbols. However, in practice one might often see the labels left as raw states.
 
-<br><br>
+<br>
 To start the training file just use.<br>
-python nlp_training.py <br>
+<b>python nlp_training.py </b><br>
 this will train a model on the asop.txt file and save it into hmm2.dat(which should have a pre-trained model).
 
 <br><br>
 # running example
 To run the main file enter <br>
-python nlp_main.py<br>
+<b>python nlp_main.py</b><br>
 this will start a loop which will allow you to enter sentences. Note: it will complain if the word is not in the training set and some words might have a statistical value of zero(which is not an error in the algorithm and has a simple yet annoying to implement fix that i haven't bothered with since I will probably never use this source code except for reference.).
